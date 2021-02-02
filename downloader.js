@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ApabiDownloader
 // @namespace    https://qinlili.bid/
-// @version      0.1
+// @version      0.2
 // @description  导出最高清晰度的图片用于制作PDF
 // @author       琴梨梨
 // @match        *://*/OnLineReader/Default.aspx?*
