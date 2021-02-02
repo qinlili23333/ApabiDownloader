@@ -18,7 +18,7 @@ var picUrl = ""
 var pageCurrent = 1;
 //下载指定页面图片
 function downloadPic(page) {
-    picUrl = window.location.origin + "/OnLineReader/" + encodeURI(getUrl(page));
+    picUrl = window.location.origin + window.location.pathname.replace("Default.aspx", "") + encodeURI(getUrl(page));
     fetch(picUrl).then(res => res.blob().then(blob => {
         var a = document.createElement('a');
         var url = window.URL.createObjectURL(blob);
