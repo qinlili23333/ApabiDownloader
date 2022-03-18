@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ApabiDownloader
 // @namespace    https://qinlili.bid/
-// @version      0.5
+// @version      0.7
 // @description  将最高清晰度的图片打包为PDF
 // @author       琴梨梨
 // @match        *://*/OnLineReader/Default.aspx?*
@@ -15,6 +15,11 @@
 
 (function() {
     'use strict';
+    //TODO:页面过多时自动重新划分
+
+
+
+
     //公共库SakiProgress
     var SakiProgress = {
         isLoaded: false,
@@ -223,6 +228,12 @@
         //读取图片
         function toDataURL(url,page, callback) {
             var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange=()=>{
+                if(xhr.readyState === 4 && xhr.status >300) {
+                    console.log("错误，重试:"+url)
+                    toDataURL(url,page,callback);
+                }
+            }
             xhr.onload = function() {
                 var reader = new FileReader();
                 reader.onloadend = function() {
@@ -257,11 +268,11 @@
         SakiProgress.showDiv()
         SakiProgress.setText("正在读取页面信息...")
         //最大化图片尺寸
-        currentHeight = 9999;
-        currentWidth = 9999;
+        currentHeight = 4096;
+        currentWidth = 4096;
         pageTotal = document.getElementById("TotalCount").innerText;
         console.log("Initializing image list...")
-        if (document.location.host=="cebxol.apabi.com"){
+        if (document.location.host=="cebxol.apabi.com"||document.location.host=="cebxol.apabiedu.com"){
             urlhost="/"
         }else{
             urlhost="/OnLineReader/"
@@ -284,10 +295,20 @@
         }
         imgEle.src=imgList[0]
     }
+
+    //导出目录
+    function indexDownload(){
+    }
+
     //创建下载按钮
+    document.querySelector("body > div.page > div.header").style.width="auto"
     var downloadBtn = document.createElement("a");
-    downloadBtn.innerText = "批量下载全书";
+    downloadBtn.innerText = "下载全书";
     downloadBtn.onclick = function () { batchDownload() }
     document.querySelector("body > div.page > div.header > ul").appendChild(downloadBtn);
+    var downloadIndexBtn = document.createElement("a");
+    downloadIndexBtn.innerText = "下载目录";
+    downloadIndexBtn.onclick = function () { indexDownload() }
+    document.querySelector("body > div.page > div.header > ul").appendChild(downloadIndexBtn);
 
 })();
